@@ -12,6 +12,7 @@ SOURCES += \
     adminform.cpp \
     beekeeperform.cpp \
     clientform.cpp \
+    editbeekeeperform.cpp \
     loginform.cpp \
     main.cpp \
     startwindow.cpp
@@ -20,6 +21,7 @@ HEADERS += \
     adminform.h \
     beekeeperform.h \
     clientform.h \
+    editbeekeeperform.h \
     loginform.h \
     startwindow.h
 
