@@ -37,7 +37,7 @@ ManageColoniesForm::ManageColoniesForm(const QString &login, QWidget *parent) : 
 
     setLayout(mainLayout);
     setWindowTitle("Manage Colonies Form");
-    resize(800, 600); // Увеличиваем размер окна
+    resize(800, 600);
 }
 
 void ManageColoniesForm::closeEvent(QCloseEvent *event) {
@@ -83,13 +83,13 @@ void ManageColoniesForm::onBackButtonClicked(const QString &login) {
 
 
 void ManageColoniesForm::onAddButtonClicked(const QString &login) {
-    // Получаем максимальное значение ID_Colony из базы данных
+
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_Colony) FROM Bee_Colonies");
     if (query.next()) {
         int maxId = query.value(0).toInt();
         int newId = maxId + 1;
 
-        // Получаем список доступных ID_Hive для текущего пчеловода
+
         int beekeeperId = getBeekeeperId(login);
         query = DatabaseManager::getInstance().executeQuery("SELECT ID_Hive FROM Hives WHERE ID_Beekeeper = :beekeeperId", {beekeeperId});
         QStringList hiveIds;
@@ -102,17 +102,17 @@ void ManageColoniesForm::onAddButtonClicked(const QString &login) {
             return;
         }
 
-        // Запрашиваем у пользователя выбор ID_Hive
+
         bool ok;
         QString selectedHiveId = QInputDialog::getItem(this, "Select Hive", "Choose a hive:", hiveIds, 0, false, &ok);
         if (ok && !selectedHiveId.isEmpty()) {
             int hiveId = selectedHiveId.toInt();
 
-            // Вставляем новую строку с новым ID_Colony и выбранным ID_Hive
+
             int row = model->rowCount();
             model->insertRow(row);
-            model->setData(model->index(row, 0), newId); // Предполагается, что ID_Colony - первый столбец
-            model->setData(model->index(row, 1), hiveId); // Предполагается, что ID_Hive - второй столбец
+            model->setData(model->index(row, 0), newId);
+            model->setData(model->index(row, 1), hiveId);
             tableView->setCurrentIndex(model->index(row, 0));
         }
     } else {
@@ -148,7 +148,7 @@ void ManageColoniesForm::loadColoniesData(const QString &login) {
         return;
     }
 
-    // Устанавливаем модель для таблицы Bee_Colonies и фильтруем по ID_Beekeeper через таблицу Hives
+
     model->setTable("Bee_Colonies");
     model->setFilter("ID_Hive IN (SELECT ID_Hive FROM Hives WHERE ID_Beekeeper = " + QString::number(beekeeperId) + ")");
     model->select();

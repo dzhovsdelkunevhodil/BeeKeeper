@@ -88,15 +88,4 @@ bool LoginForm::checkCredentials(const QString &role, const QString &login, cons
     return false;
 }
 
-// void LoginForm::connectDB(){
-//     db = QSqlDatabase::addDatabase("QODBC");
-//     db.setDatabaseName("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};FIL={MS Access};DBQ =C:/BD/BD1.accdb");
 
-//     if(db.open()){
-//         QMessageBox::information(this, "Correct", "open");
-//     }else{
-//         QMessageBox::warning(this, "Error", "no open");
-//         qDebug() << db.lastError();
-//     }
-
-// }

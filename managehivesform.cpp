@@ -36,7 +36,7 @@ ManageHivesForm::ManageHivesForm(const QString &login, QWidget *parent) : QWidge
 
     setLayout(mainLayout);
     setWindowTitle("Manage Hives Form");
-    resize(800, 600); // Увеличиваем размер окна
+    resize(800, 600);
 }
 
 void ManageHivesForm::closeEvent(QCloseEvent *event) {
@@ -79,20 +79,18 @@ void ManageHivesForm::onBackButtonClicked(const QString &login) {
 }
 
 void ManageHivesForm::onAddButtonClicked(const QString &login) {
-    // Получаем максимальное значение ID_Hive из базы данных
+
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_Hive) FROM Hives");
     if (query.next()) {
         int maxId = query.value(0).toInt();
         int newId = maxId + 1;
 
-        // Получаем ID_Beekeeper для текущего пчеловода
         int beekeeperId = getBeekeeperId(login);
 
-        // Вставляем новую строку с новым ID_Hive и ID_Beekeeper
         int row = model->rowCount();
         model->insertRow(row);
-        model->setData(model->index(row, 0), newId); // Предполагается, что ID_Hive - первый столбец
-        model->setData(model->index(row, 1), beekeeperId); // Предполагается, что ID_Beekeeper - второй столбец
+        model->setData(model->index(row, 0), newId);
+        model->setData(model->index(row, 1), beekeeperId);
         tableView->setCurrentIndex(model->index(row, 0));
     } else {
         QMessageBox::warning(this, "Error", "Failed to get the maximum ID_Hive!");
@@ -124,7 +122,7 @@ void ManageHivesForm::loadHivesData(const QString &login) {
         return;
     }
 
-    // Устанавливаем модель для таблицы Hives и фильтруем по ID_Beekeeper
+
     model->setTable("Hives");
     model->setFilter("ID_Beekeeper = " + QString::number(beekeeperId));
     model->select();
