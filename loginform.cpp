@@ -3,22 +3,22 @@
 #include "beekeeperform.h"
 #include "adminform.h"
 LoginForm::LoginForm(QWidget *parent) : QWidget(parent) {
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout = new QVBoxLayout(this);
 
-    QLabel *roleLabel = new QLabel("Role:", this);
+    roleLabel = new QLabel("Role:", this);
     roleComboBox = new QComboBox(this);
     roleComboBox->addItem("Client");
     roleComboBox->addItem("Beekeeper");
     roleComboBox->addItem("Admin");
 
-    QLabel *loginLabel = new QLabel("Login:", this);
+    loginLabel = new QLabel("Login:", this);
     loginLineEdit = new QLineEdit(this);
 
-    QLabel *passwordLabel = new QLabel("Password:", this);
+    passwordLabel = new QLabel("Password:", this);
     passwordLineEdit = new QLineEdit(this);
     passwordLineEdit->setEchoMode(QLineEdit::Password);
 
-    QPushButton *loginButton = new QPushButton("Login", this);
+    loginButton = new QPushButton("Login", this);
 
     layout->addWidget(roleLabel);
     layout->addWidget(roleComboBox);
@@ -35,6 +35,12 @@ LoginForm::~LoginForm() {
     delete roleComboBox;
     delete loginLineEdit;
     delete passwordLineEdit;
+    delete model;
+    delete roleLabel;
+    delete loginLabel;
+    delete passwordLabel;
+    delete loginButton;
+
 }
 
 void LoginForm::onLoginButtonClicked() {
@@ -78,7 +84,7 @@ bool LoginForm::checkCredentials(const QString &role, const QString &login, cons
             return true;
         }
     }
-
+    file.close();
     return false;
 }
 

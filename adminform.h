@@ -14,6 +14,7 @@ public:
 
 private:
     QLabel *welcomeLabel;
+    QVBoxLayout *layout;
 };
 
 #endif // ADMINFORM_H

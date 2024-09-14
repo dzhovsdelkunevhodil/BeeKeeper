@@ -12,17 +12,23 @@ SOURCES += \
     adminform.cpp \
     beekeeperform.cpp \
     clientform.cpp \
+    databasemanager.cpp \
     editbeekeeperform.cpp \
     loginform.cpp \
     main.cpp \
+    managecoloniesform.cpp \
+    managehivesform.cpp \
     startwindow.cpp
 
 HEADERS += \
     adminform.h \
     beekeeperform.h \
     clientform.h \
+    databasemanager.h \
     editbeekeeperform.h \
     loginform.h \
+    managecoloniesform.h \
+    managehivesform.h \
     startwindow.h
 
 FORMS +=

@@ -15,17 +15,17 @@ StartWindow::StartWindow(QWidget *parent) : QWidget(parent) {
     waitlabel->setStyleSheet("font-size: 16px; color: #000000;");
     //this->close();
     QTimer::singleShot(5000, this, &StartWindow::showLoginForm);
-};
+}
 
 
-
-StartWindow::~StartWindow()
-{
+StartWindow::~StartWindow(){
     delete movie;
-};
+    delete label;
+    delete waitlabel;
+}
 
 void StartWindow::showLoginForm() {
     LoginForm *loginForm = new LoginForm();
     loginForm->show();
     this->close();
-};
+}

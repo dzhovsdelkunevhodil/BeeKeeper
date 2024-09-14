@@ -1,19 +1,14 @@
 #include "editbeekeeperform.h"
+#include "beekeeperform.h"
+EditBeekeeperForm::EditBeekeeperForm(const QString &login, QWidget *parent) : QWidget(parent) {
 
-EditBeekeeperForm::EditBeekeeperForm(const QString &login, QWidget *parent) : QWidget(parent), login(login) {
-    db = QSqlDatabase::addDatabase("QODBC");
-    db.setDatabaseName("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:/BD/DB.accdb;");
-
-    if (!db.open()) {
-        QMessageBox::critical(this, "Error", "Failed to connect to the database!");
-        return;
-    }
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout = new QVBoxLayout(this);
 
     welcomeLabel = new QLabel("Edit for " + login + "!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
 
     editDataButton = new QPushButton("Edit Data", this);
+    backButton = new QPushButton("Back", this);
 
     tableView = new QTableView(this);
     model = new QSqlTableModel(this);
@@ -22,24 +17,30 @@ EditBeekeeperForm::EditBeekeeperForm(const QString &login, QWidget *parent) : QW
     layout->addWidget(welcomeLabel);
     layout->addWidget(tableView);
     layout->addWidget(editDataButton);
+    layout->addWidget(backButton);
 
-
-    connect(editDataButton, &QPushButton::clicked, this, &EditBeekeeperForm::onEditDataButtonClicked);
+    connect(editDataButton, &QPushButton::clicked, this, &onEditDataButtonClicked);
+    connect(backButton, &QPushButton::clicked, this, [this, login]() { onBackButtonClicked(login); });
 
     loadBeekeeperData(login);
 
     setLayout(layout);
-    setWindowTitle("Beekeeper Form");
+    setWindowTitle("Edit Beekeeper Form");
+    resize(800, 600);
 }
 
 EditBeekeeperForm::~EditBeekeeperForm() {
     delete welcomeLabel;
     delete editDataButton;
-
+    delete layout;
     delete tableView;
     delete model;
-    db.close();
+}
 
+void EditBeekeeperForm::onBackButtonClicked(const QString &login) {
+    //BeekeeperForm *beekeeperForm = new BeekeeperForm(login);
+    //beekeeperForm->show();
+    this->close();
 }
 
 void EditBeekeeperForm::onEditDataButtonClicked() {
@@ -55,7 +56,6 @@ void EditBeekeeperForm::onEditDataButtonClicked() {
 }
 
 void EditBeekeeperForm::loadBeekeeperData(const QString &login) {
-
     model->setTable("Beekeepers");
     model->setFilter("FIO = '" + login + "'");
     model->select();
@@ -63,22 +63,9 @@ void EditBeekeeperForm::loadBeekeeperData(const QString &login) {
     if (model->rowCount() == 0) {
         QMessageBox::warning(this, "Error", "Beekeeper not found in the database!");
     }
-
 }
 
-//Изменение своих данных
+void EditBeekeeperForm::closeEvent(QCloseEvent *event) {
 
-//Добавление/удаление/изменение
-//улья, за которым назначен
-//ответственным.
-
-//Добавление/удаление/изменение
-//пчелиной колонии, за которой через
-//улей назначен ответственным.
-
-//Добавление/удаление/изменение
-//сбора меда, за которым назначен
-//ответственным.
-
-//Просмотр всех пчеловодов, всех
-//сборов меда, пчелиных семей, ульев.
+    event->accept();
+}

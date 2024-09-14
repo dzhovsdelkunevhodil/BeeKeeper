@@ -1,7 +1,7 @@
 #include "clientform.h"
 
 ClientForm::ClientForm(QWidget *parent) : QWidget(parent) {
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout = new QVBoxLayout(this);
 
     welcomeLabel = new QLabel("Welcome, Client!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
@@ -14,4 +14,5 @@ ClientForm::ClientForm(QWidget *parent) : QWidget(parent) {
 
 ClientForm::~ClientForm() {
     delete welcomeLabel;
+    delete layout;
 }

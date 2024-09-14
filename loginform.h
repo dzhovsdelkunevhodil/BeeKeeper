@@ -32,6 +32,11 @@ private:
     QLineEdit *passwordLineEdit;
     QSqlDatabase db;
     QSqlTableModel *model;
+    QLabel *roleLabel;
+    QLabel *loginLabel;
+    QLabel *passwordLabel;
+    QPushButton *loginButton;
+    QVBoxLayout *layout;
 };
 
 #endif // LOGINFORM_H

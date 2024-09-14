@@ -1,7 +1,7 @@
 #include "adminform.h"
 
 AdminForm::AdminForm(QWidget *parent) : QWidget(parent) {
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout = new QVBoxLayout(this);
 
     welcomeLabel = new QLabel("Welcome, Admin!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
@@ -14,4 +14,5 @@ AdminForm::AdminForm(QWidget *parent) : QWidget(parent) {
 
 AdminForm::~AdminForm() {
     delete welcomeLabel;
+    delete layout;
 }
