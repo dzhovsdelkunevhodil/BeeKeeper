@@ -1,6 +1,6 @@
-#ifndef EDITBEEKEEPERFORM_H
-#define EDITBEEKEEPERFORM_H
-#include "databasemanager.h"
+#ifndef ORDERHISTORYFORM_H
+#define ORDERHISTORYFORM_H
+
 #include <QWidget>
 #include <QLabel>
 #include <QSqlQuery>
@@ -13,31 +13,32 @@
 #include <QSqlQueryModel>
 #include <QSqlError>
 #include <QCloseEvent>
+#include "databasemanager.h"
 
-class EditBeekeeperForm : public QWidget {
+class OrderHistoryForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit EditBeekeeperForm(const QString &login, QWidget *parent = nullptr);
-    ~EditBeekeeperForm();
+    explicit OrderHistoryForm(const QString &login, QWidget *parent = nullptr);
+    ~OrderHistoryForm();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
-    void onEditDataButtonClicked();
+    //void onEditDataButtonClicked();
     void onBackButtonClicked();
 
 private:
-    void loadBeekeeperData(const QString &login);
+    int getClientId(const QString &login);
+    void loadOHData(const QString &login);
 
     QLabel *welcomeLabel;
-    QPushButton *editDataButton;
+    //QPushButton *editDataButton;
     QPushButton *backButton;
     QTableView *tableView;
     QSqlTableModel *model;
     QString login;
     QVBoxLayout *layout;
 };
-
-#endif // EDITBEEKEEPERFORM_H
+#endif // ORDERHISTORYFORM_H

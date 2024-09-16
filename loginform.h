@@ -2,42 +2,43 @@
 #define LOGINFORM_H
 
 #include <QWidget>
+#include <QVBoxLayout>
 #include <QLabel>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QVBoxLayout>
-#include <QComboBox>
+#include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
-#include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlTableModel>
-#include <QSqlError>
+#include "clientform.h"
+#include "beekeeperform.h"
+#include "adminform.h"
+#include "registerclientform.h"
 
 class LoginForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit LoginForm(QWidget *parent = nullptr);
+    LoginForm(QWidget *parent = nullptr);
     ~LoginForm();
 
 private slots:
     void onLoginButtonClicked();
+    void onRegisterButtonClicked();
+    void onRoleChanged(const QString &role);
 
 private:
     bool checkCredentials(const QString &role, const QString &login, const QString &password);
-    // void connectDB(const QString &login, const QString &password);
-    QComboBox *roleComboBox;
-    QLineEdit *loginLineEdit;
-    QLineEdit *passwordLineEdit;
-    QSqlDatabase db;
-    QSqlTableModel *model;
-    QLabel *roleLabel;
-    QLabel *loginLabel;
-    QLabel *passwordLabel;
-    QPushButton *loginButton;
+
     QVBoxLayout *layout;
+    QLabel *roleLabel;
+    QComboBox *roleComboBox;
+    QLabel *loginLabel;
+    QLineEdit *loginLineEdit;
+    QLabel *passwordLabel;
+    QLineEdit *passwordLineEdit;
+    QPushButton *loginButton;
+    QPushButton *registerButton;
 };
 
 #endif // LOGINFORM_H
-

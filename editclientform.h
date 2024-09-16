@@ -1,6 +1,7 @@
-#ifndef EDITBEEKEEPERFORM_H
-#define EDITBEEKEEPERFORM_H
-#include "databasemanager.h"
+#ifndef EDITCLIENTFORM_H
+#define EDITCLIENTFORM_H
+
+//#include "databasemanager.h"
 #include <QWidget>
 #include <QLabel>
 #include <QSqlQuery>
@@ -14,12 +15,12 @@
 #include <QSqlError>
 #include <QCloseEvent>
 
-class EditBeekeeperForm : public QWidget {
+class EditClientForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit EditBeekeeperForm(const QString &login, QWidget *parent = nullptr);
-    ~EditBeekeeperForm();
+    explicit EditClientForm(const QString &login, QWidget *parent = nullptr);
+    ~EditClientForm();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -29,7 +30,7 @@ private slots:
     void onBackButtonClicked();
 
 private:
-    void loadBeekeeperData(const QString &login);
+    void loadClientData(const QString &login);
 
     QLabel *welcomeLabel;
     QPushButton *editDataButton;
@@ -40,4 +41,4 @@ private:
     QVBoxLayout *layout;
 };
 
-#endif // EDITBEEKEEPERFORM_H
+#endif // EDITCLIENTFORM_H

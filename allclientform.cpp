@@ -1,10 +1,10 @@
-#include "managehivesform.h"
+#include "allclientform.h"
 
-ManageHivesForm::ManageHivesForm(const QString &login, QWidget *parent) : QWidget(parent) {
+AllClientForm::AllClientForm(QWidget *parent) : QWidget(parent) {
 
     mainLayout = new QVBoxLayout(this);
 
-    welcomeLabel = new QLabel("Manage hives for " + login + "!", this);
+    welcomeLabel = new QLabel("Clients", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
 
     tableView = new QTableView(this);
@@ -28,24 +28,24 @@ ManageHivesForm::ManageHivesForm(const QString &login, QWidget *parent) : QWidge
     mainLayout->addLayout(buttonLayout);
 
     connect(editDataButton, &QPushButton::clicked, this, &onEditButtonClicked);
-    connect(addDataButton, &QPushButton::clicked, this, [this, login]() { onAddButtonClicked(login);});
+    connect(addDataButton, &QPushButton::clicked, this, &onAddButtonClicked);
     connect(deleteDataButton, &QPushButton::clicked, this, &onDeleteButtonClicked);
     connect(backButton, &QPushButton::clicked, this, &onBackButtonClicked);
 
-    loadHivesData(login);
+    loadClientsData();
 
     setLayout(mainLayout);
-    setWindowTitle("Manage Hives Form");
+    setWindowTitle("Clients");
     resize(800, 600);
 }
 
-void ManageHivesForm::closeEvent(QCloseEvent *event) {
+void AllClientForm::closeEvent(QCloseEvent *event) {
     event->accept();
     //delete buttonLayout;
 }
 
 
-ManageHivesForm::~ManageHivesForm() {
+AllClientForm::~AllClientForm() {
     delete backButton;
     delete editDataButton;
     delete addDataButton;
@@ -60,7 +60,7 @@ ManageHivesForm::~ManageHivesForm() {
 
 }
 
-void ManageHivesForm::onEditButtonClicked() {
+void AllClientForm::onEditButtonClicked() {
     if (model->isDirty()) {
         if (model->submitAll()) {
             QMessageBox::information(this, "Success", "Data saved successfully!");
@@ -72,31 +72,29 @@ void ManageHivesForm::onEditButtonClicked() {
     }
 }
 
-void ManageHivesForm::onBackButtonClicked() {
+void AllClientForm::onBackButtonClicked() {
 
     this->close();
 }
 
-void ManageHivesForm::onAddButtonClicked(const QString &login) {
+void AllClientForm::onAddButtonClicked() {
 
-    QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_Hive) FROM Hives");
+    QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_Client) FROM Clients");
     if (query.next()) {
         int maxId = query.value(0).toInt();
         int newId = maxId + 1;
 
-        int beekeeperId = getBeekeeperId(login);
 
         int row = model->rowCount();
         model->insertRow(row);
         model->setData(model->index(row, 0), newId);
-        model->setData(model->index(row, 1), beekeeperId);
         tableView->setCurrentIndex(model->index(row, 0));
     } else {
-        QMessageBox::warning(this, "Error", "Failed to get the maximum ID_Hive!");
+        QMessageBox::warning(this, "Error", "Failed to get the maximum ID_Client!");
     }
 }
 
-void ManageHivesForm::onDeleteButtonClicked() {
+void AllClientForm::onDeleteButtonClicked() {
     QModelIndex index = tableView->currentIndex();
     if (index.isValid()) {
         model->removeRow(index.row());
@@ -106,29 +104,13 @@ void ManageHivesForm::onDeleteButtonClicked() {
     }
 }
 
-int ManageHivesForm::getBeekeeperId(const QString &login) {
-    QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT ID_Beekeeper FROM Beekeepers WHERE FIO = :login", {login});
-    if (!query.next()) {
-        QMessageBox::warning(this, "Error", "Beekeeper not found in the database!");
-        return -1;
-    }
-    return query.value(0).toInt();
-}
+void AllClientForm::loadClientsData() {
 
-void ManageHivesForm::loadHivesData(const QString &login) {
-    int beekeeperId = getBeekeeperId(login);
-    if (beekeeperId == -1) {
-        return;
-    }
-
-
-    model->setTable("Hives");
-    model->setFilter("ID_Beekeeper = " + QString::number(beekeeperId));
+    model->setTable("Clients");
     model->select();
 
     if (model->rowCount() == 0) {
-        QMessageBox::warning(this, "Error", "No hives found for the beekeeper!");
+        QMessageBox::warning(this, "Error", "No clients found!");
     }
 }
-
 

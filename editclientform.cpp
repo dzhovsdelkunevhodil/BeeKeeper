@@ -1,6 +1,6 @@
-#include "editbeekeeperform.h"
+#include "editclientform.h"
 
-EditBeekeeperForm::EditBeekeeperForm(const QString &login, QWidget *parent) : QWidget(parent) {
+EditClientForm::EditClientForm(const QString &login, QWidget *parent) : QWidget(parent) {
 
     layout = new QVBoxLayout(this);
 
@@ -22,14 +22,14 @@ EditBeekeeperForm::EditBeekeeperForm(const QString &login, QWidget *parent) : QW
     connect(editDataButton, &QPushButton::clicked, this, &onEditDataButtonClicked);
     connect(backButton, &QPushButton::clicked, this, &onBackButtonClicked);
 
-    loadBeekeeperData(login);
+    loadClientData(login);
 
     setLayout(layout);
-    setWindowTitle("Edit Beekeeper Form");
+    setWindowTitle("Edit Client Form");
     resize(800, 600);
 }
 
-EditBeekeeperForm::~EditBeekeeperForm() {
+EditClientForm::~EditClientForm() {
     delete welcomeLabel;
     delete editDataButton;
     delete backButton;
@@ -38,13 +38,12 @@ EditBeekeeperForm::~EditBeekeeperForm() {
     delete model;
 }
 
-void EditBeekeeperForm::onBackButtonClicked() {
-    //BeekeeperForm *beekeeperForm = new BeekeeperForm(login);
-    //beekeeperForm->show();
+void EditClientForm::onBackButtonClicked() {
+
     this->close();
 }
 
-void EditBeekeeperForm::onEditDataButtonClicked() {
+void EditClientForm::onEditDataButtonClicked() {
     if (model->isDirty()) {
         if (model->submitAll()) {
             QMessageBox::information(this, "Success", "Data saved successfully!");
@@ -56,17 +55,17 @@ void EditBeekeeperForm::onEditDataButtonClicked() {
     }
 }
 
-void EditBeekeeperForm::loadBeekeeperData(const QString &login) {
-    model->setTable("Beekeepers");
+void EditClientForm::loadClientData(const QString &login) {
+    model->setTable("Clients");
     model->setFilter("FIO = '" + login + "'");
     model->select();
 
     if (model->rowCount() == 0) {
-        QMessageBox::warning(this, "Error", "Beekeeper not found in the database!");
+        QMessageBox::warning(this, "Error", "Clients not found in the database!");
     }
 }
 
-void EditBeekeeperForm::closeEvent(QCloseEvent *event) {
+void EditClientForm::closeEvent(QCloseEvent *event) {
 
     event->accept();
 }

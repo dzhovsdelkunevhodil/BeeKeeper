@@ -1,11 +1,11 @@
-#include "managecoloniesform.h"
+#include "manageHCform.h"
 
-ManageColoniesForm::ManageColoniesForm(const QString &login, QWidget *parent) : QWidget(parent) {
 
+ManageHCForm::ManageHCForm(const QString &login, QWidget *parent) : QWidget(parent) {
 
     mainLayout = new QVBoxLayout(this);
 
-    welcomeLabel = new QLabel("Manage colonies for " + login + "!", this);
+    welcomeLabel = new QLabel("Manage hives for " + login + "!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
 
     tableView = new QTableView(this);
@@ -33,22 +33,20 @@ ManageColoniesForm::ManageColoniesForm(const QString &login, QWidget *parent) : 
     connect(deleteDataButton, &QPushButton::clicked, this, &onDeleteButtonClicked);
     connect(backButton, &QPushButton::clicked, this, &onBackButtonClicked);
 
-    loadColoniesData(login);
+    loadHCData(login);
 
     setLayout(mainLayout);
-    setWindowTitle("Manage Colonies Form");
+    setWindowTitle("Manage Hives Form");
     resize(800, 600);
 }
 
-void ManageColoniesForm::closeEvent(QCloseEvent *event) {
-
-
+void ManageHCForm::closeEvent(QCloseEvent *event) {
     event->accept();
     //delete buttonLayout;
 }
 
 
-ManageColoniesForm::~ManageColoniesForm() {
+ManageHCForm::~ManageHCForm() {
     delete backButton;
     delete editDataButton;
     delete addDataButton;
@@ -63,7 +61,7 @@ ManageColoniesForm::~ManageColoniesForm() {
 
 }
 
-void ManageColoniesForm::onEditButtonClicked() {
+void ManageHCForm::onEditButtonClicked() {
     if (model->isDirty()) {
         if (model->submitAll()) {
             QMessageBox::information(this, "Success", "Data saved successfully!");
@@ -75,22 +73,23 @@ void ManageColoniesForm::onEditButtonClicked() {
     }
 }
 
-void ManageColoniesForm::onBackButtonClicked() {
+void ManageHCForm::onBackButtonClicked() {
     //BeekeeperForm *beekeeperForm = new BeekeeperForm(login);
-    //beekeeperForm->show();
+    // beekeeperForm->show();
     this->close();
 }
 
+void ManageHCForm::onAddButtonClicked(const QString &login) {
 
-void ManageColoniesForm::onAddButtonClicked(const QString &login) {
-
-    QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_Colony) FROM Bee_Colonies");
+    QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_HC) FROM Honey_Collections");
     if (query.next()) {
         int maxId = query.value(0).toInt();
         int newId = maxId + 1;
 
 
         int beekeeperId = getBeekeeperId(login);
+
+
         query = DatabaseManager::getInstance().executeQuery("SELECT ID_Hive FROM Hives WHERE ID_Beekeeper = :beekeeperId", {beekeeperId});
         QStringList hiveIds;
         while (query.next()) {
@@ -109,20 +108,60 @@ void ManageColoniesForm::onAddButtonClicked(const QString &login) {
             int hiveId = selectedHiveId.toInt();
 
 
-            int row = model->rowCount();
-            model->insertRow(row);
-            model->setData(model->index(row, 0), newId);
-            model->setData(model->index(row, 1), hiveId);
-            tableView->setCurrentIndex(model->index(row, 0));
+            query = DatabaseManager::getInstance().executeQuery("SELECT ID_Colony FROM Bee_Colonies WHERE ID_Hive = :hiveId", {hiveId});
+            QStringList colonyIds;
+            while (query.next()) {
+                colonyIds << query.value(0).toString();
+            }
+
+            if (colonyIds.isEmpty()) {
+                QMessageBox::warning(this, "Error", "No colonies available for the selected hive!");
+                return;
+            }
+
+
+            QString selectedColonyId = QInputDialog::getItem(this, "Select Colony", "Choose a colony:", colonyIds, 0, false, &ok);
+            if (ok && !selectedColonyId.isEmpty()) {
+                int colonyId = selectedColonyId.toInt();
+
+
+                query = DatabaseManager::getInstance().executeQuery("SELECT ID_Client FROM Clients");
+                QStringList clientIds;
+                //clientIds.append("0");
+                while (query.next()) {
+                    clientIds << query.value(0).toString();
+                }
+
+                if (clientIds.isEmpty()) {
+                    QMessageBox::warning(this, "Error", "No clients available!");
+                    return;
+                }
+
+
+                QString selectedClientId = QInputDialog::getItem(this, "Select Client", "Choose a client (7 - without client):", clientIds, 0, false, &ok);
+                if (ok && !selectedClientId.isEmpty()) {
+                    int clientId = selectedClientId.toInt();
+
+
+                    int row = model->rowCount();
+                    model->insertRow(row);
+                    model->setData(model->index(row, 0), newId);
+                    model->setData(model->index(row, 1), beekeeperId);
+                    model->setData(model->index(row, 2), hiveId);
+                    model->setData(model->index(row, 3), colonyId);
+                    model->setData(model->index(row, 4), clientId);
+                    tableView->setCurrentIndex(model->index(row, 0));
+                }
+            }
         }
     } else {
-        QMessageBox::warning(this, "Error", "Failed to get the maximum ID_Colony!");
+        QMessageBox::warning(this, "Error", "Failed to get the maximum ID_HC!");
     }
 }
 
 
 
-void ManageColoniesForm::onDeleteButtonClicked() {
+void ManageHCForm::onDeleteButtonClicked() {
     QModelIndex index = tableView->currentIndex();
     if (index.isValid()) {
         model->removeRow(index.row());
@@ -132,7 +171,7 @@ void ManageColoniesForm::onDeleteButtonClicked() {
     }
 }
 
-int ManageColoniesForm::getBeekeeperId(const QString &login) {
+int ManageHCForm::getBeekeeperId(const QString &login) {
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT ID_Beekeeper FROM Beekeepers WHERE FIO = :login", {login});
     if (!query.next()) {
         QMessageBox::warning(this, "Error", "Beekeeper not found in the database!");
@@ -141,20 +180,18 @@ int ManageColoniesForm::getBeekeeperId(const QString &login) {
     return query.value(0).toInt();
 }
 
-
-void ManageColoniesForm::loadColoniesData(const QString &login) {
+void ManageHCForm::loadHCData(const QString &login) {
     int beekeeperId = getBeekeeperId(login);
     if (beekeeperId == -1) {
         return;
     }
 
 
-    model->setTable("Bee_Colonies");
-    model->setFilter("ID_Hive IN (SELECT ID_Hive FROM Hives WHERE ID_Beekeeper = " + QString::number(beekeeperId) + ")");
+    model->setTable("Honey_Collections");
+    model->setFilter("ID_Beekeeper = " + QString::number(beekeeperId));
     model->select();
 
     if (model->rowCount() == 0) {
-        QMessageBox::warning(this, "Error", "No colonies found for the beekeeper!");
+        QMessageBox::warning(this, "Error", "No HCollections found for the beekeeper!");
     }
 }
-

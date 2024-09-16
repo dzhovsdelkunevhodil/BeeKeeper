@@ -10,25 +10,45 @@ CONFIG += c++17
 
 SOURCES += \
     adminform.cpp \
+    allHCform.cpp \
+    allbeekeeperform.cpp \
+    allclientform.cpp \
+    allcolonyform.cpp \
+    allhiveform.cpp \
     beekeeperform.cpp \
+    buyform.cpp \
     clientform.cpp \
     databasemanager.cpp \
     editbeekeeperform.cpp \
+    editclientform.cpp \
     loginform.cpp \
     main.cpp \
+    manageHCform.cpp \
     managecoloniesform.cpp \
     managehivesform.cpp \
+    orderhistoryform.cpp \
+    registerclientform.cpp \
     startwindow.cpp
 
 HEADERS += \
     adminform.h \
+    allHCform.h \
+    allbeekeeperform.h \
+    allclientform.h \
+    allcolonyform.h \
+    allhiveform.h \
     beekeeperform.h \
+    buyform.h \
     clientform.h \
     databasemanager.h \
     editbeekeeperform.h \
+    editclientform.h \
     loginform.h \
+    manageHCform.h \
     managecoloniesform.h \
     managehivesform.h \
+    orderhistoryform.h \
+    registerclientform.h \
     startwindow.h
 
 FORMS +=

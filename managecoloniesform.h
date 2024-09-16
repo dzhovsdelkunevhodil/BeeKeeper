@@ -12,7 +12,6 @@
 #include <QTableView>
 #include <QSqlQueryModel>
 #include <QSqlError>
-#include "databasemanager.h"
 #include <QInputDialog>
 #include <QCloseEvent>
 class ManageColoniesForm : public QWidget {
@@ -26,7 +25,7 @@ private slots:
     void onEditButtonClicked();
     void onDeleteButtonClicked();
     void onAddButtonClicked(const QString &login);
-    void onBackButtonClicked(const QString &login);
+    void onBackButtonClicked();
 protected:
     void closeEvent(QCloseEvent *event) override;
 private:

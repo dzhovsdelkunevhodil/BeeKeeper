@@ -1,5 +1,6 @@
-#ifndef EDITBEEKEEPERFORM_H
-#define EDITBEEKEEPERFORM_H
+#ifndef BUYFORM_H
+#define BUYFORM_H
+
 #include "databasemanager.h"
 #include <QWidget>
 #include <QLabel>
@@ -13,26 +14,28 @@
 #include <QSqlQueryModel>
 #include <QSqlError>
 #include <QCloseEvent>
+#include <QInputDialog>
 
-class EditBeekeeperForm : public QWidget {
+
+class BuyForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit EditBeekeeperForm(const QString &login, QWidget *parent = nullptr);
-    ~EditBeekeeperForm();
-
+    explicit BuyForm(const QString &login, QWidget *parent = nullptr);
+    ~BuyForm();
 protected:
     void closeEvent(QCloseEvent *event) override;
-
 private slots:
-    void onEditDataButtonClicked();
+    void onBuyButtonClicked(const QString &login);
     void onBackButtonClicked();
 
 private:
-    void loadBeekeeperData(const QString &login);
+    void loadProductsData();
+    int getClientId(const QString &login);
+
 
     QLabel *welcomeLabel;
-    QPushButton *editDataButton;
+    QPushButton *buyButton;
     QPushButton *backButton;
     QTableView *tableView;
     QSqlTableModel *model;
@@ -40,4 +43,4 @@ private:
     QVBoxLayout *layout;
 };
 
-#endif // EDITBEEKEEPERFORM_H
+#endif // BUYFORM_H

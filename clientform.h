@@ -2,19 +2,32 @@
 #define CLIENTFORM_H
 
 #include <QWidget>
-#include <QLabel>
+#include <QPushButton>
 #include <QVBoxLayout>
+#include <QMessageBox>
+#include <QCloseEvent>
+#include "databasemanager.h"
 
 class ClientForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit ClientForm(QWidget *parent = nullptr);
+    ClientForm(const QString &login, QWidget *parent = nullptr);
     ~ClientForm();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
+private slots:
+    void showOrderHistory(const QString &login);
+    void editData(const QString &login);
+    void buy(const QString &login);
+
 private:
-    QLabel *welcomeLabel;
     QVBoxLayout *layout;
+    QPushButton *orderHistoryButton;
+    QPushButton *editDataButton;
+    QPushButton *buyButton;
 };
 
 #endif // CLIENTFORM_H

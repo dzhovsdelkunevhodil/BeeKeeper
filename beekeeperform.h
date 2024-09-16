@@ -15,11 +15,13 @@ private slots:
     void showEditBform(const QString &login);
     void showManageHform(const QString &login);
     void showManageCform(const QString &login);
+    void showManageHCform(const QString &login);
 
 private:
     QLabel *welcomeLabel;
     QPushButton *editBeekeeperButton;
     QPushButton *manageHivesButton;
+    QPushButton *manageHCButton;
     QVBoxLayout *mainLayout;
     QHBoxLayout *buttonLayout;
     QPushButton *manageColoniesButton;

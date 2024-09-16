@@ -1,6 +1,5 @@
-#ifndef MANAGEHIVESFORM_H
-#define MANAGEHIVESFORM_H
-
+#ifndef ALLBEEKEEPERFORM_H
+#define ALLBEEKEEPERFORM_H
 #include <QWidget>
 #include <QLabel>
 #include <QSqlQuery>
@@ -14,23 +13,22 @@
 #include <QSqlError>
 #include "databasemanager.h"
 #include <QCloseEvent>
-class ManageHivesForm : public QWidget {
+class AllBeekeeperForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit ManageHivesForm(const QString &login, QWidget *parent = nullptr);
-    ~ManageHivesForm();
+    explicit AllBeekeeperForm(QWidget *parent = nullptr);
+    ~AllBeekeeperForm();
 
 private slots:
     void onEditButtonClicked();
     void onDeleteButtonClicked();
-    void onAddButtonClicked(const QString &login);
+    void onAddButtonClicked();
     void onBackButtonClicked();
 protected:
     void closeEvent(QCloseEvent *event) override;
 private:
-    void loadHivesData(const QString &login);
-    int getBeekeeperId(const QString &login);
+    void loadBeekeepersData();
     QLabel *welcomeLabel;
     QPushButton *editDataButton;
     QPushButton *addDataButton;
@@ -43,6 +41,4 @@ private:
 
     QHBoxLayout *buttonLayout;
 };
-
-
-#endif // MANAGEHIVESFORM_H
+#endif // ALLBEEKEEPERFORM_H
