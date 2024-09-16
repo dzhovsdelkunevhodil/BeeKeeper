@@ -18,7 +18,7 @@ LoginForm::LoginForm(QWidget *parent) : QWidget(parent) {
 
     loginButton = new QPushButton("Login", this);
     registerButton = new QPushButton("Register", this);
-    registerButton->setVisible(false); // Скрываем кнопку регистрации по умолчанию
+    registerButton->setVisible(false);
 
     layout->addWidget(roleLabel);
     layout->addWidget(roleComboBox);

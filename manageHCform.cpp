@@ -42,7 +42,7 @@ ManageHCForm::ManageHCForm(const QString &login, QWidget *parent) : QWidget(pare
 
 void ManageHCForm::closeEvent(QCloseEvent *event) {
     event->accept();
-    //delete buttonLayout;
+
 }
 
 
@@ -74,8 +74,7 @@ void ManageHCForm::onEditButtonClicked() {
 }
 
 void ManageHCForm::onBackButtonClicked() {
-    //BeekeeperForm *beekeeperForm = new BeekeeperForm(login);
-    // beekeeperForm->show();
+
     this->close();
 }
 

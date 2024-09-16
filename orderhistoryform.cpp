@@ -37,7 +37,7 @@ OrderHistoryForm::~OrderHistoryForm() {
 }
 void OrderHistoryForm::closeEvent(QCloseEvent *event) {
     event->accept();
-    //delete buttonLayout;
+
 }
 void OrderHistoryForm::onBackButtonClicked() {
     this->close();

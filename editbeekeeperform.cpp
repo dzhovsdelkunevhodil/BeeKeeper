@@ -39,8 +39,6 @@ EditBeekeeperForm::~EditBeekeeperForm() {
 }
 
 void EditBeekeeperForm::onBackButtonClicked() {
-    //BeekeeperForm *beekeeperForm = new BeekeeperForm(login);
-    //beekeeperForm->show();
     this->close();
 }
 

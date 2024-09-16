@@ -41,7 +41,7 @@ ManageHivesForm::ManageHivesForm(const QString &login, QWidget *parent) : QWidge
 
 void ManageHivesForm::closeEvent(QCloseEvent *event) {
     event->accept();
-    //delete buttonLayout;
+
 }
 
 

@@ -16,11 +16,6 @@ ClientForm::ClientForm(const QString &login, QWidget *parent) : QWidget(parent) 
     editDataButton = new QPushButton("Edit Data", this);
     buyButton = new QPushButton("Buy", this);
 
-
-    // orderHistoryButton->setStyleSheet("QPushButton { background-color: #4CAF50; color: white; border: none; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; }");
-    // editDataButton->setStyleSheet("QPushButton { background-color: #008CBA; color: white; border: none; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; }");
-    // buyButton->setStyleSheet("QPushButton { background-color: #f44336; color: white; border: none; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; }");
-
     connect(orderHistoryButton, &QPushButton::clicked, this, [this, login]() { showOrderHistory(login); });
     connect(editDataButton, &QPushButton::clicked, this, [this, login]() { editData(login); });
     connect(buyButton, &QPushButton::clicked, this, [this, login]() {buy(login); });

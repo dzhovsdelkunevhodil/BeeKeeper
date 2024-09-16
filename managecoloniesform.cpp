@@ -41,10 +41,8 @@ ManageColoniesForm::ManageColoniesForm(const QString &login, QWidget *parent) : 
 }
 
 void ManageColoniesForm::closeEvent(QCloseEvent *event) {
-
-
     event->accept();
-    //delete buttonLayout;
+
 }
 
 
@@ -76,8 +74,7 @@ void ManageColoniesForm::onEditButtonClicked() {
 }
 
 void ManageColoniesForm::onBackButtonClicked() {
-    //BeekeeperForm *beekeeperForm = new BeekeeperForm(login);
-    //beekeeperForm->show();
+
     this->close();
 }
 
