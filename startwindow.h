@@ -16,7 +16,7 @@ private slots:
     void showLoginForm();
 private:
     QLabel *label;
-    QMovie *movie;
+   // QMovie *movie;
     QLabel *waitlabel;
 };
 

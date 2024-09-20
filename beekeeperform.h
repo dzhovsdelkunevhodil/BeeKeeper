@@ -5,12 +5,16 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QHBoxLayout>
+#include <QSqlTableModel>
+#include <QTableView>
 class BeekeeperForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit BeekeeperForm(const QString &login, QWidget *parent = nullptr);
+    BeekeeperForm(const QString &login, QWidget *parent = nullptr);
     ~BeekeeperForm();
+
 private slots:
     void showEditBform(const QString &login);
     void showManageHform(const QString &login);
@@ -21,10 +25,11 @@ private:
     QLabel *welcomeLabel;
     QPushButton *editBeekeeperButton;
     QPushButton *manageHivesButton;
+    QPushButton *manageColoniesButton;
     QPushButton *manageHCButton;
     QVBoxLayout *mainLayout;
-    QHBoxLayout *buttonLayout;
-    QPushButton *manageColoniesButton;
+    QVBoxLayout *buttonLayout;
 };
 
 #endif // BEEKEEPERFORM_H
+

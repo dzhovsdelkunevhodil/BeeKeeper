@@ -12,6 +12,7 @@
 #include <QSqlQueryModel>
 #include <QSqlError>
 #include "databasemanager.h"
+#include "allbeekeeperform.h"
 #include <QCloseEvent>
 class AllClientForm : public QWidget {
     Q_OBJECT
@@ -28,6 +29,7 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event) override;
 private:
+    void showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon);
     void loadClientsData();
     QLabel *welcomeLabel;
     QPushButton *editDataButton;
@@ -38,8 +40,9 @@ private:
     QSqlTableModel *model;
     QString login;
     QPushButton *backButton;
-
-    QHBoxLayout *buttonLayout;
+    PhoneDelegate *phoneDelegate;
+    EmailDelegate *emailDelegate;
+    QVBoxLayout *buttonLayout;
 };
 
 #endif // ALLCLIENTFORM_H

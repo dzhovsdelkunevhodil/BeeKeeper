@@ -4,31 +4,57 @@
 #include "managecoloniesform.h"
 #include "manageHCform.h"
 
+
 BeekeeperForm::BeekeeperForm(const QString &login, QWidget *parent) : QWidget(parent) {
     if (!DatabaseManager::getInstance().connectToDatabase()) {
         return;
     }
-    mainLayout = new QVBoxLayout(this);
+
+    setWindowTitle("Beekeeper Form");
+    setFixedSize(800, 600);
+
+    // Устанавливаем фон с картинкой
+    QLabel *backgroundLabel = new QLabel(this);
+    backgroundLabel->setPixmap(QPixmap("C:/BD/background.png").scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    backgroundLabel->setGeometry(0, 0, this->width(), this->height());
+    backgroundLabel->lower();
+
+    // Создаем черный прямоугольник для кнопок
+    QWidget *blackRect = new QWidget(this);
+    blackRect->setStyleSheet("background-color: #000000;");
+    blackRect->setGeometry(100, 100, 600, 400); // Установите размеры и положение прямоугольника
+
+    mainLayout = new QVBoxLayout(blackRect);
+    mainLayout->setAlignment(Qt::AlignCenter);
 
     welcomeLabel = new QLabel("Welcome, " + login + "!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
+    welcomeLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: #FFA500;");
 
     mainLayout->addWidget(welcomeLabel);
 
-    buttonLayout = new QHBoxLayout();
+    buttonLayout = new QVBoxLayout(); // Изменяем QHBoxLayout на QVBoxLayout
 
     editBeekeeperButton = new QPushButton("Edit Data", this);
-    manageHivesButton = new QPushButton("Manage Hives", this);
-    manageColoniesButton = new QPushButton("Manage Colonies", this);
-    manageHCButton = new QPushButton("Manage Honey Collections", this);
-    //viewAllButton = new QPushButton("View All", this);
+    editBeekeeperButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    editBeekeeperButton->setFixedWidth(200);
 
+    manageHivesButton = new QPushButton("Manage Hives", this);
+    manageHivesButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    manageHivesButton->setFixedWidth(200);
+
+    manageColoniesButton = new QPushButton("Manage Colonies", this);
+    manageColoniesButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    manageColoniesButton->setFixedWidth(200);
+
+    manageHCButton = new QPushButton("Manage Honey Collections", this);
+    manageHCButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    manageHCButton->setFixedWidth(200);
 
     buttonLayout->addWidget(editBeekeeperButton);
     buttonLayout->addWidget(manageHivesButton);
     buttonLayout->addWidget(manageColoniesButton);
     buttonLayout->addWidget(manageHCButton);
-    //buttonLayout->addWidget(viewAllButton);
 
     mainLayout->addLayout(buttonLayout);
 
@@ -36,12 +62,10 @@ BeekeeperForm::BeekeeperForm(const QString &login, QWidget *parent) : QWidget(pa
     connect(manageHivesButton, &QPushButton::clicked, this, [this, login]() { showManageHform(login); });
     connect(manageColoniesButton, &QPushButton::clicked, this, [this, login]() { showManageCform(login); });
     connect(manageHCButton, &QPushButton::clicked, this, [this, login]() { showManageHCform(login); });
-    // connect(viewAllButton, &QPushButton::clicked, this, [this, login]() { showViewAllForm(login); });
 
-    setLayout(mainLayout);
-    setWindowTitle("Beekeeper Form");
-    resize(800, 600);
+    blackRect->setLayout(mainLayout);
 }
+
 
 
 

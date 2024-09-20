@@ -1,25 +1,33 @@
 #include "orderhistoryform.h"
 OrderHistoryForm::OrderHistoryForm(const QString &login, QWidget *parent) : QWidget(parent) {
 
+    setStyleSheet("QWidget { background-color: #000000; }"
+                  "QLineEdit { background-color: #000000; color: #FFA500; }"
+                  "QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }"
+                  "QPushButton:hover { background-color: #FFD700; }");
+
     layout = new QVBoxLayout(this);
 
     welcomeLabel = new QLabel("Order History for " + login + "!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
+    welcomeLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #FFA500;");
 
-    //editDataButton = new QPushButton("Edit Data", this);
     backButton = new QPushButton("Back", this);
+    backButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    backButton->setFixedWidth(200);
 
     tableView = new QTableView(this);
     model = new QSqlTableModel(this);
     tableView->setModel(model);
+    tableView->setStyleSheet("QTableView { background-color: #000000; color: #FFA500; }"
+                             "QTableView::item { background-color: #000000; color: #FFA500; }"
+                             "QHeaderView::section { background-color: #FFA500; color: #000000; }");
 
     layout->addWidget(welcomeLabel);
     layout->addWidget(tableView);
-    //layout->addWidget(editDataButton);
     layout->addWidget(backButton);
 
-    //connect(editDataButton, &QPushButton::clicked, this, &onEditDataButtonClicked);
-    connect(backButton, &QPushButton::clicked, this, &onBackButtonClicked);
+    connect(backButton, &QPushButton::clicked, this, &OrderHistoryForm::onBackButtonClicked);
 
     loadOHData(login);
 
@@ -48,7 +56,14 @@ void OrderHistoryForm::onBackButtonClicked() {
 int OrderHistoryForm::getClientId(const QString &login) {
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT ID_Client FROM Clients WHERE FIO = :login", {login});
     if (!query.next()) {
-        QMessageBox::warning(this, "Error", "Client not found in the database!");
+        QMessageBox messageBox;
+        messageBox.setIcon(QMessageBox::Warning);
+        messageBox.setText("Client not found in the database!");
+        messageBox.setWindowTitle("Error");
+        messageBox.setStyleSheet("QMessageBox { background-color: #000000; color: #FFA500; }"
+                                 "QMessageBox QLabel { color: #FFA500; }"
+                                 "QMessageBox QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }");
+        messageBox.exec();
         return -1;
     }
     return query.value(0).toInt();
@@ -60,12 +75,18 @@ void OrderHistoryForm::loadOHData(const QString &login) {
         return;
     }
 
-
     model->setTable("Honey_Collections");
     model->setFilter("ID_Client = " + QString::number(clientid));
     model->select();
 
     if (model->rowCount() == 0) {
-        QMessageBox::warning(this, "Error", "No HCollections found for the client!");
+        QMessageBox messageBox;
+        messageBox.setIcon(QMessageBox::Warning);
+        messageBox.setText("No HCollections found for the client!");
+        messageBox.setWindowTitle("Error");
+        messageBox.setStyleSheet("QMessageBox { background-color: #000000; color: #FFA500; }"
+                                 "QMessageBox QLabel { color: #FFA500; }"
+                                 "QMessageBox QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }");
+        messageBox.exec();
     }
 }

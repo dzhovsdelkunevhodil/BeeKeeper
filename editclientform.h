@@ -1,6 +1,6 @@
 #ifndef EDITCLIENTFORM_H
 #define EDITCLIENTFORM_H
-
+#include "allbeekeeperform.h"
 //#include "databasemanager.h"
 #include <QWidget>
 #include <QLabel>
@@ -39,6 +39,8 @@ private:
     QSqlTableModel *model;
     QString login;
     QVBoxLayout *layout;
+    PhoneDelegate *phoneDelegate;
+    EmailDelegate *emailDelegate;
 };
 
 #endif // EDITCLIENTFORM_H

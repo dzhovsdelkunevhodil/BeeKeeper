@@ -29,6 +29,7 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event) override;
 private:
+    void showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon);
     void loadHivesData();
     QLabel *welcomeLabel;
     QPushButton *editDataButton;
@@ -40,7 +41,7 @@ private:
     QString login;
     QPushButton *backButton;
 
-    QHBoxLayout *buttonLayout;
+    QVBoxLayout *buttonLayout;
 };
 
 #endif // ALLHIVEFORM_H

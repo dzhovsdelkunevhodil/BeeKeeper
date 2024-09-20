@@ -14,6 +14,8 @@
 #include "beekeeperform.h"
 #include "adminform.h"
 #include "registerclientform.h"
+#include <QPropertyAnimation>
+#include <QTimer>
 
 class LoginForm : public QWidget {
     Q_OBJECT
@@ -22,6 +24,7 @@ public:
     LoginForm(QWidget *parent = nullptr);
     ~LoginForm();
 
+
 private slots:
     void onLoginButtonClicked();
     void onRegisterButtonClicked();
@@ -29,7 +32,7 @@ private slots:
 
 private:
     bool checkCredentials(const QString &role, const QString &login, const QString &password);
-
+    void reverseAnimation();
     QVBoxLayout *layout;
     QLabel *roleLabel;
     QComboBox *roleComboBox;
@@ -39,6 +42,7 @@ private:
     QLineEdit *passwordLineEdit;
     QPushButton *loginButton;
     QPushButton *registerButton;
+    QPropertyAnimation *animation;
 };
 
 #endif // LOGINFORM_H

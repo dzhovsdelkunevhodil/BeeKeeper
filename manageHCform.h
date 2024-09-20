@@ -30,6 +30,7 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event) override;
 private:
+    void showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon);
     void loadHCData(const QString &login);
     int getBeekeeperId(const QString &login);
     QLabel *welcomeLabel;

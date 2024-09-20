@@ -1,23 +1,41 @@
 #include "manageHCform.h"
 
-
 ManageHCForm::ManageHCForm(const QString &login, QWidget *parent) : QWidget(parent) {
 
+    setStyleSheet("QWidget { background-color: #000000; }"
+                  "QLineEdit { background-color: #000000; color: #FFA500; }"
+                  "QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }"
+                  "QPushButton:hover { background-color: #FFD700; }");
     mainLayout = new QVBoxLayout(this);
 
     welcomeLabel = new QLabel("Manage hives for " + login + "!", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
+    welcomeLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #FFA500;");
 
     tableView = new QTableView(this);
     model = new QSqlTableModel(this);
     tableView->setModel(model);
+    tableView->setStyleSheet("QTableView { background-color: #000000; color: #FFA500; }"
+                             "QTableView::item { background-color: #000000; color: #FFA500; }"
+                             "QHeaderView::section { background-color: #FFA500; color: #000000; }");
 
     buttonLayout = new QHBoxLayout();
 
-    editDataButton = new QPushButton("Edit Data", this);
+    editDataButton = new QPushButton("Save Data", this);
+    editDataButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    editDataButton->setFixedWidth(200);
+
     addDataButton = new QPushButton("Add Data", this);
+    addDataButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    addDataButton->setFixedWidth(200);
+
     deleteDataButton = new QPushButton("Delete Data", this);
+    deleteDataButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    deleteDataButton->setFixedWidth(200);
+
     backButton = new QPushButton("Back", this);
+    backButton->setStyleSheet("background-color: #FFA500; color: #000000; border: 1px solid #000000;");
+    backButton->setFixedWidth(200);
 
     buttonLayout->addWidget(editDataButton);
     buttonLayout->addWidget(addDataButton);
@@ -28,10 +46,10 @@ ManageHCForm::ManageHCForm(const QString &login, QWidget *parent) : QWidget(pare
     mainLayout->addWidget(tableView);
     mainLayout->addLayout(buttonLayout);
 
-    connect(editDataButton, &QPushButton::clicked, this, &onEditButtonClicked);
-    connect(addDataButton, &QPushButton::clicked, this, [this, login]() { onAddButtonClicked(login);});
-    connect(deleteDataButton, &QPushButton::clicked, this, &onDeleteButtonClicked);
-    connect(backButton, &QPushButton::clicked, this, &onBackButtonClicked);
+    connect(editDataButton, &QPushButton::clicked, this, &ManageHCForm::onEditButtonClicked);
+    connect(addDataButton, &QPushButton::clicked, this, [this, login]() { onAddButtonClicked(login); });
+    connect(deleteDataButton, &QPushButton::clicked, this, &ManageHCForm::onDeleteButtonClicked);
+    connect(backButton, &QPushButton::clicked, this, &ManageHCForm::onBackButtonClicked);
 
     loadHCData(login);
 
@@ -39,12 +57,6 @@ ManageHCForm::ManageHCForm(const QString &login, QWidget *parent) : QWidget(pare
     setWindowTitle("Manage Hives Form");
     resize(800, 600);
 }
-
-void ManageHCForm::closeEvent(QCloseEvent *event) {
-    event->accept();
-
-}
-
 
 ManageHCForm::~ManageHCForm() {
     delete backButton;
@@ -54,40 +66,33 @@ ManageHCForm::~ManageHCForm() {
     delete buttonLayout;
     delete welcomeLabel;
     delete tableView;
-
     delete mainLayout;
     delete model;
-    //
+}
 
+void ManageHCForm::onBackButtonClicked() {
+    this->close();
 }
 
 void ManageHCForm::onEditButtonClicked() {
     if (model->isDirty()) {
         if (model->submitAll()) {
-            QMessageBox::information(this, "Success", "Data saved successfully!");
+            showMessageBox("Success", "Data saved successfully!", QMessageBox::Information);
         } else {
-            QMessageBox::warning(this, "Error", "Failed to save data!");
+            showMessageBox("Error", "Failed to save data!", QMessageBox::Warning);
         }
     } else {
-        QMessageBox::information(this, "Info", "No changes to save.");
+        showMessageBox("Info", "No changes to save.", QMessageBox::Information);
     }
 }
 
-void ManageHCForm::onBackButtonClicked() {
-
-    this->close();
-}
-
 void ManageHCForm::onAddButtonClicked(const QString &login) {
-
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_HC) FROM Honey_Collections");
     if (query.next()) {
         int maxId = query.value(0).toInt();
         int newId = maxId + 1;
 
-
         int beekeeperId = getBeekeeperId(login);
-
 
         query = DatabaseManager::getInstance().executeQuery("SELECT ID_Hive FROM Hives WHERE ID_Beekeeper = :beekeeperId", {beekeeperId});
         QStringList hiveIds;
@@ -96,16 +101,14 @@ void ManageHCForm::onAddButtonClicked(const QString &login) {
         }
 
         if (hiveIds.isEmpty()) {
-            QMessageBox::warning(this, "Error", "No hives available for the beekeeper!");
+            showMessageBox("Error", "No hives available for the beekeeper!", QMessageBox::Warning);
             return;
         }
-
 
         bool ok;
         QString selectedHiveId = QInputDialog::getItem(this, "Select Hive", "Choose a hive:", hiveIds, 0, false, &ok);
         if (ok && !selectedHiveId.isEmpty()) {
             int hiveId = selectedHiveId.toInt();
-
 
             query = DatabaseManager::getInstance().executeQuery("SELECT ID_Colony FROM Bee_Colonies WHERE ID_Hive = :hiveId", {hiveId});
             QStringList colonyIds;
@@ -114,33 +117,28 @@ void ManageHCForm::onAddButtonClicked(const QString &login) {
             }
 
             if (colonyIds.isEmpty()) {
-                QMessageBox::warning(this, "Error", "No colonies available for the selected hive!");
+                showMessageBox("Error", "No colonies available for the selected hive!", QMessageBox::Warning);
                 return;
             }
-
 
             QString selectedColonyId = QInputDialog::getItem(this, "Select Colony", "Choose a colony:", colonyIds, 0, false, &ok);
             if (ok && !selectedColonyId.isEmpty()) {
                 int colonyId = selectedColonyId.toInt();
 
-
                 query = DatabaseManager::getInstance().executeQuery("SELECT ID_Client FROM Clients");
                 QStringList clientIds;
-                //clientIds.append("0");
                 while (query.next()) {
                     clientIds << query.value(0).toString();
                 }
 
                 if (clientIds.isEmpty()) {
-                    QMessageBox::warning(this, "Error", "No clients available!");
+                    showMessageBox("Error", "No clients available!", QMessageBox::Warning);
                     return;
                 }
-
 
                 QString selectedClientId = QInputDialog::getItem(this, "Select Client", "Choose a client (7 - without client):", clientIds, 0, false, &ok);
                 if (ok && !selectedClientId.isEmpty()) {
                     int clientId = selectedClientId.toInt();
-
 
                     int row = model->rowCount();
                     model->insertRow(row);
@@ -154,11 +152,9 @@ void ManageHCForm::onAddButtonClicked(const QString &login) {
             }
         }
     } else {
-        QMessageBox::warning(this, "Error", "Failed to get the maximum ID_HC!");
+        showMessageBox("Error", "Failed to get the maximum ID_HC!", QMessageBox::Warning);
     }
 }
-
-
 
 void ManageHCForm::onDeleteButtonClicked() {
     QModelIndex index = tableView->currentIndex();
@@ -166,14 +162,14 @@ void ManageHCForm::onDeleteButtonClicked() {
         model->removeRow(index.row());
         model->submitAll();
     } else {
-        QMessageBox::warning(this, "Error", "No row selected!");
+        showMessageBox("Error", "No row selected!", QMessageBox::Warning);
     }
 }
 
 int ManageHCForm::getBeekeeperId(const QString &login) {
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT ID_Beekeeper FROM Beekeepers WHERE FIO = :login", {login});
     if (!query.next()) {
-        QMessageBox::warning(this, "Error", "Beekeeper not found in the database!");
+        showMessageBox("Error", "Beekeeper not found in the database!", QMessageBox::Warning);
         return -1;
     }
     return query.value(0).toInt();
@@ -185,12 +181,26 @@ void ManageHCForm::loadHCData(const QString &login) {
         return;
     }
 
-
     model->setTable("Honey_Collections");
     model->setFilter("ID_Beekeeper = " + QString::number(beekeeperId));
     model->select();
 
     if (model->rowCount() == 0) {
-        QMessageBox::warning(this, "Error", "No HCollections found for the beekeeper!");
+        showMessageBox("Error", "No HCollections found for the beekeeper!", QMessageBox::Warning);
     }
+}
+
+void ManageHCForm::showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon) {
+    QMessageBox messageBox;
+    messageBox.setIcon(icon);
+    messageBox.setText(message);
+    messageBox.setWindowTitle(title);
+    messageBox.setStyleSheet("QMessageBox { background-color: #000000; color: #FFA500; }"
+                             "QMessageBox QLabel { color: #FFA500; }"
+                             "QMessageBox QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }");
+    messageBox.exec();
+}
+
+void ManageHCForm::closeEvent(QCloseEvent *event) {
+    event->accept();
 }

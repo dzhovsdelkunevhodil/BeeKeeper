@@ -29,7 +29,7 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event) override;
 private:
-
+    void showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon);
     void loadColoniesData(const QString &login);
 
     int getBeekeeperId(const QString &login);

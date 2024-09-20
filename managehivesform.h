@@ -31,6 +31,7 @@ protected:
 private:
     void loadHivesData(const QString &login);
     int getBeekeeperId(const QString &login);
+    void showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon);
     QLabel *welcomeLabel;
     QPushButton *editDataButton;
     QPushButton *addDataButton;

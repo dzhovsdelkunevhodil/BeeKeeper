@@ -2,21 +2,40 @@
 
 AllClientForm::AllClientForm(QWidget *parent) : QWidget(parent) {
 
+    setStyleSheet("QWidget { background-color: #000000; }"
+                  "QLineEdit { background-color: #000000; color: #FFA500; }"
+                  "QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }"
+                  "QPushButton:hover { background-color: #FFD700; }");
+
     mainLayout = new QVBoxLayout(this);
 
     welcomeLabel = new QLabel("Clients", this);
     welcomeLabel->setAlignment(Qt::AlignCenter);
+    welcomeLabel->setStyleSheet("font-size: 24px; font-weight: bold; color: #FFA500;");
 
     tableView = new QTableView(this);
     model = new QSqlTableModel(this);
     tableView->setModel(model);
+    tableView->setStyleSheet("QTableView { background-color: #000000; color: #FFA500; }"
+                             "QTableView::item { background-color: #000000; color: #FFA500; }"
+                             "QHeaderView::section { background-color: #FFA500; color: #000000; }");
 
-    buttonLayout = new QHBoxLayout();
+    buttonLayout = new QVBoxLayout();
 
-    editDataButton = new QPushButton("Edit Data", this);
+    editDataButton = new QPushButton("Save Data", this);
+    editDataButton->setFixedWidth(200);
+
     addDataButton = new QPushButton("Add Data", this);
+    addDataButton->setFixedWidth(200);
+
     deleteDataButton = new QPushButton("Delete Data", this);
+    deleteDataButton->setFixedWidth(200);
+
     backButton = new QPushButton("Back", this);
+    backButton->setFixedWidth(200);
+
+    phoneDelegate = new PhoneDelegate(this);
+    emailDelegate = new EmailDelegate(this);
 
     buttonLayout->addWidget(editDataButton);
     buttonLayout->addWidget(addDataButton);
@@ -27,10 +46,10 @@ AllClientForm::AllClientForm(QWidget *parent) : QWidget(parent) {
     mainLayout->addWidget(tableView);
     mainLayout->addLayout(buttonLayout);
 
-    connect(editDataButton, &QPushButton::clicked, this, &onEditButtonClicked);
-    connect(addDataButton, &QPushButton::clicked, this, &onAddButtonClicked);
-    connect(deleteDataButton, &QPushButton::clicked, this, &onDeleteButtonClicked);
-    connect(backButton, &QPushButton::clicked, this, &onBackButtonClicked);
+    connect(editDataButton, &QPushButton::clicked, this, &AllClientForm::onEditButtonClicked);
+    connect(addDataButton, &QPushButton::clicked, this, &AllClientForm::onAddButtonClicked);
+    connect(deleteDataButton, &QPushButton::clicked, this, &AllClientForm::onDeleteButtonClicked);
+    connect(backButton, &QPushButton::clicked, this, &AllClientForm::onBackButtonClicked);
 
     loadClientsData();
 
@@ -39,11 +58,10 @@ AllClientForm::AllClientForm(QWidget *parent) : QWidget(parent) {
     resize(800, 600);
 }
 
+
 void AllClientForm::closeEvent(QCloseEvent *event) {
     event->accept();
-    //delete buttonLayout;
 }
-
 
 AllClientForm::~AllClientForm() {
     delete backButton;
@@ -53,44 +71,40 @@ AllClientForm::~AllClientForm() {
     delete buttonLayout;
     delete welcomeLabel;
     delete tableView;
-
     delete mainLayout;
     delete model;
-    //
-
+    delete phoneDelegate;
+    delete emailDelegate;
 }
 
 void AllClientForm::onEditButtonClicked() {
     if (model->isDirty()) {
         if (model->submitAll()) {
-            QMessageBox::information(this, "Success", "Data saved successfully!");
+            showMessageBox("Success", "Data saved successfully!", QMessageBox::Information);
         } else {
-            QMessageBox::warning(this, "Error", "Failed to save data!");
+            showMessageBox("Error", "Failed to save data!", QMessageBox::Warning);
         }
     } else {
-        QMessageBox::information(this, "Info", "No changes to save.");
+        showMessageBox("Info", "No changes to save.", QMessageBox::Information);
     }
 }
 
 void AllClientForm::onBackButtonClicked() {
-
     this->close();
 }
 
 void AllClientForm::onAddButtonClicked() {
-
     QSqlQuery query = DatabaseManager::getInstance().executeQuery("SELECT MAX(ID_Client) FROM Clients");
     if (query.next()) {
         int maxId = query.value(0).toInt();
         int newId = maxId + 1;
-
 
         int row = model->rowCount();
         model->insertRow(row);
         model->setData(model->index(row, 0), newId);
         tableView->setCurrentIndex(model->index(row, 0));
     } else {
-        QMessageBox::warning(this, "Error", "Failed to get the maximum ID_Client!");
+        showMessageBox("Error", "Failed to get the maximum ID_Client!", QMessageBox::Warning);
     }
 }
 
@@ -100,17 +114,35 @@ void AllClientForm::onDeleteButtonClicked() {
         model->removeRow(index.row());
         model->submitAll();
     } else {
-        QMessageBox::warning(this, "Error", "No row selected!");
+        showMessageBox("Error", "No row selected!", QMessageBox::Warning);
     }
 }
 
 void AllClientForm::loadClientsData() {
-
     model->setTable("Clients");
     model->select();
 
     if (model->rowCount() == 0) {
-        QMessageBox::warning(this, "Error", "No clients found!");
+        showMessageBox("Error", "No clients found!", QMessageBox::Warning);
+    }
+    int phoneColumn = model->fieldIndex("Phone");
+    if (phoneColumn != -1) {
+        tableView->setItemDelegateForColumn(phoneColumn, phoneDelegate);
+    }
+
+    int emailColumn = model->fieldIndex("Email");
+    if (emailColumn != -1) {
+        tableView->setItemDelegateForColumn(emailColumn, emailDelegate);
     }
 }
 
+void AllClientForm::showMessageBox(const QString &title, const QString &message, QMessageBox::Icon icon) {
+    QMessageBox messageBox;
+    messageBox.setIcon(icon);
+    messageBox.setText(message);
+    messageBox.setWindowTitle(title);
+    messageBox.setStyleSheet("QMessageBox { background-color: #000000; color: #FFA500; }"
+                             "QMessageBox QLabel { color: #FFA500; }"
+                             "QMessageBox QPushButton { background-color: #FFA500; color: #000000; border: 1px solid #000000; }");
+    messageBox.exec();
+}
